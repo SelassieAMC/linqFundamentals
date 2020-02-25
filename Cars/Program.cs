@@ -15,33 +15,22 @@ namespace Cars
             var manufacturers = ProcessManufacturers("manufacturers.csv");
 
             var query = from car in cars
-                        join manufacturer in manufacturers
-                            on  new { car.Manufacturer , car.Year} 
-                                equals 
-                                new { Manufacturer = manufacturer.Name, manufacturer.Year }
-                        orderby car.Combined descending, car.Name ascending
-                        select new
-                        {
-                            manufacturer.Headquarters,
-                            car.Name,
-                            car.Combined
-                        };
+                        group car by car.Manufacturer.ToUpper() into m
+                        orderby m.Key
+                        select m;
 
-            var query2 = cars.Join(manufacturers,
-                                    c => new { c.Manufacturer, c.Year },
-                                    m => new { Manufacturer = m.Name, m.Year }, (c, m) => new
-                                    {
-                                        m.Headquarters,
-                                        c.Name,
-                                        c.Combined
-                                    })
-                                .OrderByDescending(c => c.Combined)
-                                .ThenBy(c => c.Name);
+            var query2 = cars.GroupBy(c => c.Manufacturer)
+                             .OrderBy(g => g.Key);
 
-            foreach (var car in query.Take(10))
+            foreach (var group in query2)
             {
-                Console.WriteLine($"{car.Headquarters} {car.Name} : {car.Combined}");
+                Console.WriteLine(group.Key);
+                foreach (var car in group.OrderByDescending(c => c.Combined).Take(2))
+                {
+                    Console.WriteLine($"\t{car.Name} : {car.Combined}");
+                }
             }
+            
             Console.ReadLine();
 
         }
