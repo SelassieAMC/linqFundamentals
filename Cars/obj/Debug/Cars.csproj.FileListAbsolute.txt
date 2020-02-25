@@ -1,0 +1,8 @@
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\bin\Debug\fuel.csv
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\bin\Debug\manufacturers.csv
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\bin\Debug\Cars.exe.config
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\bin\Debug\Cars.exe
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\bin\Debug\Cars.pdb
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\obj\Debug\Cars.csprojAssemblyReference.cache
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\obj\Debug\Cars.exe
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Cars\obj\Debug\Cars.pdb

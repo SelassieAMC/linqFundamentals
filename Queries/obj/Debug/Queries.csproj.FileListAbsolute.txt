@@ -1,0 +1,6 @@
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\bin\Debug\Queries.exe.config
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\bin\Debug\Queries.exe
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\bin\Debug\Queries.pdb
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\obj\Debug\Queries.csprojAssemblyReference.cache
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\obj\Debug\Queries.exe
+C:\Users\aclavijo\Documents\Privado\Courses\LINQ Fundamentals\Queries\obj\Debug\Queries.pdb
