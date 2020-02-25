@@ -14,17 +14,20 @@ namespace Cars
             var cars = ProcessFile("fuel.csv");
             var manufacturers = ProcessManufacturers("manufacturers.csv");
 
-            var query = from manufacturer in manufacturers
-                        join car in cars on manufacturer.Name equals car.Manufacturer
-                            into carGroup
+            var query = from car in cars
+                        group car by car.Manufacturer into carGroup
                         select new
                         {
-                            Manufacturer = manufacturer,
-                            Cars = carGroup
+                            Name = carGroup.Key,
+                            Max = carGroup.Max(c => c.Combined),
+                            Min = carGroup.Min(c => c.Combined),
+                            Avg = carGroup.Average(c => c.Combined)
                         } into result
-                        group result by result.Manufacturer.Headquarters;
+                        orderby result.Max descending
+                        select result;
+                        
 
-                         
+
 
             var query2 = manufacturers.GroupJoin(cars, m => m.Name, c => c.Manufacturer,
                     (m, g) =>
@@ -35,15 +38,12 @@ namespace Cars
                             })
                     .GroupBy(m => m.Manufacturer.Headquarters);
 
-            foreach (var group in query2)
+            foreach (var data in query)
             {
-                Console.WriteLine($"{group.Key}:");
-                foreach (var car in group   .SelectMany(c => c.Cars)
-                                            .OrderByDescending(c => c.Combined)
-                                            .Take(3))
-                {
-                    Console.WriteLine($"\t{car.Name} : {car.Combined}");
-                }
+                Console.WriteLine($"{data.Name}:");
+                Console.WriteLine($"\t Max : {data.Max}");
+                Console.WriteLine($"\t Min : {data.Min}");
+                Console.WriteLine($"\t Avg : {data.Avg}");
             }
             
             Console.ReadLine();
