@@ -21,7 +21,10 @@ namespace Cars
                         {
                             Manufacturer = manufacturer,
                             Cars = carGroup
-                        };
+                        } into result
+                        group result by result.Manufacturer.Headquarters;
+
+                         
 
             var query2 = manufacturers.GroupJoin(cars, m => m.Name, c => c.Manufacturer,
                     (m, g) =>
@@ -30,12 +33,14 @@ namespace Cars
                                 Manufacturer = m,
                                 Cars = g
                             })
-                    .OrderBy(m => m.Manufacturer.Name);
+                    .GroupBy(m => m.Manufacturer.Headquarters);
 
             foreach (var group in query2)
             {
-                Console.WriteLine($"{group.Manufacturer.Name}:{group.Manufacturer.Headquarters}");
-                foreach (var car in group.Cars.OrderByDescending(c => c.Combined).Take(2))
+                Console.WriteLine($"{group.Key}:");
+                foreach (var car in group   .SelectMany(c => c.Cars)
+                                            .OrderByDescending(c => c.Combined)
+                                            .Take(3))
                 {
                     Console.WriteLine($"\t{car.Name} : {car.Combined}");
                 }
