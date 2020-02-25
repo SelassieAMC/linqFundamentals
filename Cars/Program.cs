@@ -25,20 +25,31 @@ namespace Cars
                         } into result
                         orderby result.Max descending
                         select result;
-                        
 
 
 
-            var query2 = manufacturers.GroupJoin(cars, m => m.Name, c => c.Manufacturer,
-                    (m, g) =>
-                            new
-                            {
-                                Manufacturer = m,
-                                Cars = g
-                            })
-                    .GroupBy(m => m.Manufacturer.Headquarters);
 
-            foreach (var data in query)
+            var query2 = cars.GroupBy(c => c.Manufacturer)
+                             .Select(g =>
+                                          {
+                                              var results = g.Aggregate(new CarStatistics(),
+                                                                       (cst, c) => cst.Accumulate(c),
+                                                                       cst => cst.Compute());
+                                              return new
+                                              {
+                                                  Name = g.Key,
+                                                  results.Min,
+                                                  results.Max,
+                                                  Avg = results.Average
+                                              };
+                                          })
+                             .OrderByDescending(c => c.Max);
+                                     
+                               
+
+                             
+
+            foreach (var data in query2)
             {
                 Console.WriteLine($"{data.Name}:");
                 Console.WriteLine($"\t Max : {data.Max}");
@@ -77,5 +88,33 @@ namespace Cars
                     .ToList();
         }
 
+        private class CarStatistics
+        {
+            public CarStatistics()
+            {
+                Min = Int32.MaxValue;
+                Max = Int32.MinValue;
+            }
+
+            public CarStatistics Accumulate(Car c)
+            {
+                Min = Math.Min(Min,c.Combined);
+                Max = Math.Max(Max, c.Combined);
+                Count += 1;
+                Total += c.Combined;
+                return this;
+            }
+
+            public CarStatistics Compute()
+            {
+                Average = Total / Count;
+                return this;
+            }
+            public int Max { get; set; }
+            public int Min { get; set; }
+            public int Count { get; set; }
+            public int Total { get; set; }
+            public double Average { get; set; }
+        }
     }
 }
