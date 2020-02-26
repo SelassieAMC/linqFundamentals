@@ -13,18 +13,41 @@ namespace Cars
         static void Main(string[] args)
         {
             CreateXml();
+            QueryXml();
+        }
+
+        private static void QueryXml()
+        {
+            var document = XDocument.Load("fuel.xml");
+            var ns = (XNamespace)"http://namespace.com/cars/2020";
+            var ex = (XNamespace)"http://namespace.com/cars/2020/ex";
+
+            var query = from car in document.Element(ns + "Cars")?.Elements(ex + "Car") 
+                                                        ?? Enumerable.Empty<XElement>()
+                        where car.Attribute("Manufacturer")?.Value == "BMW"
+                        select car.Attribute("Name").Value;
+
+            foreach (var item in query)
+            {
+                Console.WriteLine(item);
+            }
+            Console.ReadLine();
         }
 
         private static void CreateXml()
         {
             var data = ProcessFile("fuel.csv");
-
             var document = new XDocument();
-            var cars = new XElement("Cars",
+            var ns = (XNamespace)"http://namespace.com/cars/2020";
+            var ex = (XNamespace)"http://namespace.com/cars/2020/ex";
+
+            var cars = new XElement(ns + "Cars",
                                 from obj in data
-                                select new XElement("Car",
+                                select new XElement(ex + "Car",
                                               new XAttribute("Name", obj.Name),
-                                              new XAttribute("Combined", obj.Combined)));
+                                              new XAttribute("Combined", obj.Combined),
+                                              new XAttribute("Manufacturer",obj.Manufacturer)));
+            cars.Add(new XAttribute(XNamespace.Xmlns + "ex", ex));
             document.Add(cars);
             document.Save("fuel.xml");
         }
