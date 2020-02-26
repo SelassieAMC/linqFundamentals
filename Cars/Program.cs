@@ -12,24 +12,21 @@ namespace Cars
     {
         static void Main(string[] args)
         {
+            CreateXml();
+        }
+
+        private static void CreateXml()
+        {
             var data = ProcessFile("fuel.csv");
 
             var document = new XDocument();
-            var cars = new XElement("Cars");
-
-            foreach (var obj in data)
-            {
-                var car = new XElement("Car");
-                var name = new XAttribute("Name", obj.Name);
-                var combined = new XAttribute("Combined", obj.Combined);
-                car.Add(name);
-                car.Add(combined);
-
-                cars.Add(car);
-            }
+            var cars = new XElement("Cars",
+                                from obj in data
+                                select new XElement("Car",
+                                              new XAttribute("Name", obj.Name),
+                                              new XAttribute("Combined", obj.Combined)));
             document.Add(cars);
             document.Save("fuel.xml");
-
         }
 
         private static List<Manufacturer> ProcessManufacturers(string path)
