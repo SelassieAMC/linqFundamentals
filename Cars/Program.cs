@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Cars
 {
@@ -11,53 +12,23 @@ namespace Cars
     {
         static void Main(string[] args)
         {
-            var cars = ProcessFile("fuel.csv");
-            var manufacturers = ProcessManufacturers("manufacturers.csv");
+            var data = ProcessFile("fuel.csv");
 
-            var query = from car in cars
-                        group car by car.Manufacturer into carGroup
-                        select new
-                        {
-                            Name = carGroup.Key,
-                            Max = carGroup.Max(c => c.Combined),
-                            Min = carGroup.Min(c => c.Combined),
-                            Avg = carGroup.Average(c => c.Combined)
-                        } into result
-                        orderby result.Max descending
-                        select result;
+            var document = new XDocument();
+            var cars = new XElement("Cars");
 
-
-
-
-            var query2 = cars.GroupBy(c => c.Manufacturer)
-                             .Select(g =>
-                                          {
-                                              var results = g.Aggregate(new CarStatistics(),
-                                                                       (cst, c) => cst.Accumulate(c),
-                                                                       cst => cst.Compute());
-                                              return new
-                                              {
-                                                  Name = g.Key,
-                                                  results.Min,
-                                                  results.Max,
-                                                  Avg = results.Average
-                                              };
-                                          })
-                             .OrderByDescending(c => c.Max);
-                                     
-                               
-
-                             
-
-            foreach (var data in query2)
+            foreach (var obj in data)
             {
-                Console.WriteLine($"{data.Name}:");
-                Console.WriteLine($"\t Max : {data.Max}");
-                Console.WriteLine($"\t Min : {data.Min}");
-                Console.WriteLine($"\t Avg : {data.Avg}");
+                var car = new XElement("Car");
+                var name = new XAttribute("Name", obj.Name);
+                var combined = new XAttribute("Combined", obj.Combined);
+                car.Add(name);
+                car.Add(combined);
+
+                cars.Add(car);
             }
-            
-            Console.ReadLine();
+            document.Add(cars);
+            document.Save("fuel.xml");
 
         }
 
